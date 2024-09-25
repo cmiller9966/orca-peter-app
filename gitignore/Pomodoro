@@ -1,0 +1,64 @@
+// components/PomodoroTimer.js
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
+const PomodoroTimer = () => {
+  const WORK_TIME = 25 * 60;
+  const BREAK_TIME = 5 * 60;
+  
+  const [seconds, setSeconds] = useState(WORK_TIME);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isWork, setIsWork] = useState(true);
+
+  useEffect(() => {
+    let interval = null;
+    if (isRunning) {
+      interval = setInterval(() => {
+        setSeconds(prev => {
+          if (prev === 0) {
+            if (isWork) {
+              setIsWork(false);
+              return BREAK_TIME;
+            } else {
+              setIsWork(true);
+              return WORK_TIME;
+            }
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else if (!isRunning && seconds !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning, seconds, isWork]);
+
+  const formatTime = (secs) => {
+    const minutes = Math.floor(secs / 60);
+    const seconds = secs % 60;
+    return `${minutes < 10 ? '0'+minutes : minutes}:${seconds < 10 ? '0'+seconds : seconds}`;
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.timerText}>{isWork ? "Work Time" : "Break Time"}</Text>
+      <Text style={styles.time}>{formatTime(seconds)}</Text>
+      <TouchableOpacity onPress={() => setIsRunning(!isRunning)} style={styles.button}>
+        <Text style={styles.buttonText}>{isRunning ? "Pause" : "Start"}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => { setSeconds(isWork ? WORK_TIME : BREAK_TIME); setIsRunning(false); }} style={styles.button}>
+        <Text style={styles.buttonText}>Reset</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default PomodoroTimer;
+
+const styles = StyleSheet.create({
+  container: { flex:1, justifyContent: 'center', alignItems: 'center' },
+  timerText: { fontSize: 24, marginBottom: 10 },
+  time: { fontSize: 48, marginBottom: 20 },
+  button: { backgroundColor: '#007BFF', padding: 15, borderRadius: 30, marginVertical: 5, width: 100, alignItems: 'center' },
+  buttonText: { color: 'white', fontWeight: 'bold' },
+});
