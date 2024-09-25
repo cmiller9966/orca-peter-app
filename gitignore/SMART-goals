@@ -1,0 +1,89 @@
+// components/SmartGoals.js
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
+
+const SmartGoals = () => {
+  const [goals, setGoals] = useState([]);
+  const [newGoal, setNewGoal] = useState({
+    specific: '',
+    measurable: '',
+    achievable: '',
+    relevant: '',
+    timeBound: '',
+  });
+
+  const addGoal = () => {
+    if (Object.values(newGoal).every(field => field !== '')) {
+      setGoals([...goals, { id: Date.now(), ...newGoal }]);
+      setNewGoal({ specific: '', measurable: '', achievable: '', relevant: '', timeBound: '' });
+    } else {
+      alert("Please fill all fields.");
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Set a SMART Goal</Text>
+      <TextInput
+        placeholder="Specific"
+        value={newGoal.specific}
+        onChangeText={(text) => setNewGoal({ ...newGoal, specific: text })}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Measurable"
+        value={newGoal.measurable}
+        onChangeText={(text) => setNewGoal({ ...newGoal, measurable: text })}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Achievable"
+        value={newGoal.achievable}
+        onChangeText={(text) => setNewGoal({ ...newGoal, achievable: text })}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Relevant"
+        value={newGoal.relevant}
+        onChangeText={(text) => setNewGoal({ ...newGoal, relevant: text })}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Time-bound"
+        value={newGoal.timeBound}
+        onChangeText={(text) => setNewGoal({ ...newGoal, timeBound: text })}
+        style={styles.input}
+      />
+      <TouchableOpacity onPress={addGoal} style={styles.addButton}>
+        <Text style={styles.addButtonText}>Add Goal</Text>
+      </TouchableOpacity>
+      
+      <FlatList
+        data={goals}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.goalItem}>
+            <Text style={styles.goalTitle}>Goal:</Text>
+            <Text>Specific: {item.specific}</Text>
+            <Text>Measurable: {item.measurable}</Text>
+            <Text>Achievable: {item.achievable}</Text>
+            <Text>Relevant: {item.relevant}</Text>
+            <Text>Time-bound: {item.timeBound}</Text>
+          </View>
+        )}
+      />
+    </View>
+  );
+};
+
+export default SmartGoals;
+
+const styles = StyleSheet.create({
+  container: { flex:1, padding: 20 },
+  title: { fontSize: 24, marginBottom: 10, textAlign: 'center' },
+  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 5, marginVertical: 5 },
+  addButton: { backgroundColor: '#007BFF', padding: 15, borderRadius: 30, marginVertical: 10 },
+  addButtonText: { color: 'white', textAlign: 'center', fontWeight: 'bold' },
+  goalItem: { backgroundColor: '#f9f9f9', padding: 15, borderRadius: 5, marginVertical: 5 },
+  goalTitle: { fontWeight: 'bold', marginBottom: 5 },
+});
