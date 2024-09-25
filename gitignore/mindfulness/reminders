@@ -1,0 +1,40 @@
+// components/MindfulnessReminders.js
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Switch, Button, Platform } from 'react-native';
+import PushNotification from 'react-native-push-notification';
+
+const MindfulnessReminders = () => {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  const scheduleNotifications = () => {
+    if (isEnabled) {
+      PushNotification.cancelAllLocalNotifications();
+      PushNotification.localNotificationSchedule({
+        // Android Only Properties
+        channelId: "mindfulness-channel",
+        // iOS and Android properties
+        message: "Time for a mindfulness break!", 
+        date: new Date(Date.now() + 60 * 1000), // First notification after 1 minute
+        repeatType: 'minute', // For demonstration; adjust as needed (e.g., 'hour')
+      });
+    } else {
+      PushNotification.cancelAllLocalNotifications();
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.label}>Enable Mindfulness Reminders</Text>
+      <Switch onValueChange={toggleSwitch} value={isEnabled} />
+      <Button title="Set Reminders" onPress={scheduleNotifications} />
+    </View>
+  );
+};
+
+export default MindfulnessReminders;
+
+const styles = StyleSheet.create({
+  container: { flex:1, justifyContent: 'center', alignItems: 'center' },
+  label: { fontSize: 18, marginBottom: 10 },
+});
