@@ -86,3 +86,10 @@ const styles = StyleSheet.create({
   cancelButton: { backgroundColor: '#dc3545', padding: 10, borderRadius: 5, marginTop: 10 },
   cancelButtonText: { color: 'white', textAlign: 'center' },
 });
+
+
+###Explanation:
+
+## The EisenhowerMatrix component allows users to add tasks and categorize them into one of the four quadrants.
+## A modal is used to input the task description and select the appropriate quadrant.
+## Tasks are displayed under their respective quadrants.
